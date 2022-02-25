@@ -8,6 +8,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	. "github.com/seanpang-vmware/hcsshim-wrapper/pkg/hcn"
 )
 
 var ()
@@ -16,12 +18,24 @@ func init() {
 
 }
 
-func NewHcnAttachCommand() *HcnAttachCommand {
+func NewHcnAttachCommand(args []string) *HcnAttachCommand {
 	hc := &HcnAttachCommand{
-		fs : flag.NewFlagSet("hcn-attach", flag.ContinueOnError)
+		Fs: flag.NewFlagSet("HCNAttach", flag.ContinueOnError),
 	}
 
-	hc.fs.StringVar(&hc.name, "epName", "", "Name of the HCS endpoint")
+	hc.Init(args)
+
+	return hc
+}
+
+func NewHcnGetEndpointByIDCommand(args []string) *GetEndpointByIDCommand {
+	hc := &GetEndpointByIDCommand{
+		Fs: flag.NewFlagSet("HCNAttach", flag.ContinueOnError),
+	}
+
+	hc.Init(args)
+
+	return hc
 }
 
 type Runner interface {
@@ -36,14 +50,22 @@ func root(args []string) error {
 	}
 
 	cmds := []Runner{
-		NewHcnAttachCommand(),
+		NewHcnAttachCommand(args[1:]),
 	}
 
 	subcommand := os.Args[1]
 
 	for _, cmd := range cmds {
 		if cmd.Name() == subcommand {
-
+			fmt.Println("Get hcn command", cmd.Name)
+			output = cmd.Run()
+			if output != nil {
+				b, err := json.Marshal(output)
+				if err != nil {
+					fmt.Println(string(b))
+				}
+			}
+			return nil
 		}
 	}
 	return fmt.Errorf("Unknown subcommand: %s", subcommand)
