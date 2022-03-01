@@ -6,8 +6,8 @@ import (
 	"github.com/Microsoft/hcsshim/hcn"
 )
 
-func GetEndpointByID(epId string) ([]string, error) {
-	eps, err := hcn.GetNamespaceEndpointIds(epId)
+func GetEndpointsByID(sandbox string) ([]string, error) {
+	eps, err := hcn.GetNamespaceEndpointIds(sandbox)
 	if err != nil {
 		return eps, nil
 	}
@@ -15,7 +15,7 @@ func GetEndpointByID(epId string) ([]string, error) {
 }
 
 func isEndpointAttached(epId string, sandbox string) (bool, error) {
-	attachedEpIds, err := GetEndpointByID(sandbox)
+	attachedEpIds, err := GetEndpointsByID(sandbox)
 	if err != nil {
 		for _, existingEP := range attachedEpIds {
 			if existingEP == epId {

@@ -22,17 +22,13 @@ func (h *HcnAttachCommand) Init(args []string) error {
 	h.Fs.StringVar(&h.EndpointName, "epName", "", "HNS endpoint name")
 	h.Fs.StringVar(&h.SandboxID, "sandbox", "", "Sandbox id for endpoint to attach")
 	h.Fs.Parse(args)
-	fmt.Printf("init epid %s, epname %s, sbid %s", h.EndpointId, h.EndpointName, h.SandboxID)
 	return nil
 }
 
 func (h *HcnAttachCommand) Run() (string, error) {
-	fmt.Println("Running hcn attach command ", h.Name())
-	fmt.Printf("Read epid %s, epname %s, sbid %s", h.EndpointId, h.EndpointName, h.SandboxID)
-
 	err := attachEndpoint(h.EndpointId, h.SandboxID)
 	if err != nil {
-		fmt.Println("Failed to attach endpoint")
+		fmt.Println("Error: Failed to attach endpoint", err)
 		return "", err
 	}
 	fmt.Println(json.Marshal(h.EndpointId))

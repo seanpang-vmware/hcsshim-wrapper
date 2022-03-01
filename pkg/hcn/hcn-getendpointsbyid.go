@@ -23,10 +23,7 @@ func (h *HcnGetEndpointsBySandboxIdCommand) Init(args []string) error {
 }
 
 func (h *HcnGetEndpointsBySandboxIdCommand) Run() (string, error) {
-	fmt.Println("Running hcn command ", h.Name())
-	fmt.Printf("Read sbid %s", h.SandboxID)
-
-	attachedEpIds, err := GetEndpointByID(h.SandboxID)
+	attachedEpIds, err := GetEndpointsByID(h.SandboxID)
 	if err != nil {
 		output, err := json.Marshal(attachedEpIds)
 		if err != nil {

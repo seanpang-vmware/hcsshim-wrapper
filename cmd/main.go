@@ -57,7 +57,6 @@ func root(args []string) error {
 
 	for _, cmd := range cmds {
 		if cmd.Name() == subcommand {
-			fmt.Println("Get hcn command", cmd.Name())
 			output, err := cmd.Run()
 			if err != nil {
 				fmt.Println(output)
@@ -65,7 +64,7 @@ func root(args []string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("Unknown subcommand: %s", subcommand)
+	return fmt.Errorf("Error: Unknown subcommand: %s", subcommand)
 }
 
 func main() {
