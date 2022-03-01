@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-
-	utils "github.com/seanpang-vmware/hcsshim-wrapper/pkg/hcn/utils.go"
 )
 
 type HcnGetEndpointsBySandboxIdCommand struct {
@@ -28,7 +26,7 @@ func (h *HcnGetEndpointsBySandboxIdCommand) Run() (string, error) {
 	fmt.Println("Running hcn command ", h.Name())
 	fmt.Printf("Read sbid %s", h.SandboxID)
 
-	attachedEpIds, err := utils.GetEndpointByID(h.SandboxID)
+	attachedEpIds, err := GetEndpointByID(h.SandboxID)
 	if err != nil {
 		output, err := json.Marshal(attachedEpIds)
 		if err != nil {
