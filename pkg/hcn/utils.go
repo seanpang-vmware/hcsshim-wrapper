@@ -34,15 +34,15 @@ func attachEndpoint(epId string, sandbox string) error {
 		if attached {
 			return errors.New("Endpoint Already Attached")
 		}
-
-		hcnEp, err := hcn.GetEndpointByID(epId)
-		if err != nil {
-			return errors.New("Can not find endpoint by id")
-		}
-		if err := hcnEp.NamespaceAttach(sandbox); err != nil {
-			return err
-		}
-		return nil
 	}
-	return err
+
+	hcnEp, err := hcn.GetEndpointByID(epId)
+	if err != nil {
+		return errors.New("Can not find endpoint by id")
+	}
+	if err := hcnEp.NamespaceAttach(sandbox); err != nil {
+		return err
+	}
+	return nil
+
 }
