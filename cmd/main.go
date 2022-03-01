@@ -28,9 +28,9 @@ func NewHcnAttachCommand(args []string) *HcnAttachCommand {
 	return hc
 }
 
-func NewHcnGetEndpointByIDCommand(args []string) *GetEndpointByIDCommand {
-	hc := &GetEndpointByIDCommand{
-		Fs: flag.NewFlagSet("HCNAttach", flag.ContinueOnError),
+func NewHcnGetEndpointsBySandboxIdCommand(args []string) *HcnGetEndpointsBySandboxIdCommand {
+	hc := &HcnGetEndpointsBySandboxIdCommand{
+		Fs: flag.NewFlagSet("HCNGetNamespaceEndpoints", flag.ContinueOnError),
 	}
 
 	hc.Init(args)
@@ -40,7 +40,7 @@ func NewHcnGetEndpointByIDCommand(args []string) *GetEndpointByIDCommand {
 
 type Runner interface {
 	Init([]string) error
-	Run() error
+	Run() (string, error)
 	Name() string
 }
 
@@ -57,13 +57,10 @@ func root(args []string) error {
 
 	for _, cmd := range cmds {
 		if cmd.Name() == subcommand {
-			fmt.Println("Get hcn command", cmd.Name)
-			output = cmd.Run()
-			if output != nil {
-				b, err := json.Marshal(output)
-				if err != nil {
-					fmt.Println(string(b))
-				}
+			fmt.Println("Get hcn command", cmd.Name())
+			output, err := cmd.Run()
+			if err != nil {
+				fmt.Println(output)
 			}
 			return nil
 		}

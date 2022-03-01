@@ -1,10 +1,11 @@
 package hcn
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 
-	"github.com/Microsoft/hcsshim/hcn"
+	utils "github.com/seanpang-vmware/hcsshim-wrapper/pkg/hcn/utils.go"
 )
 
 type HcnGetEndpointsBySandboxIdCommand struct {
@@ -23,13 +24,17 @@ func (h *HcnGetEndpointsBySandboxIdCommand) Init(args []string) error {
 	return nil
 }
 
-func (h *HcnGetEndpointsBySandboxIdCommand) Run() error {
+func (h *HcnGetEndpointsBySandboxIdCommand) Run() (string, error) {
 	fmt.Println("Running hcn command ", h.Name())
 	fmt.Printf("Read sbid %s", h.SandboxID)
 
-	attachedEpIds, err := hcn.GetNamespaceEndpointIds(h.SandboxID)
+	attachedEpIds, err := utils.GetEndpointByID(h.SandboxID)
 	if err != nil {
-		return nil, err
+		output, err := json.Marshal(attachedEpIds)
+		if err != nil {
+			return string(output), nil
+		}
+		return "", err
 	}
-	return attachedEpIds
+	return "", err
 }

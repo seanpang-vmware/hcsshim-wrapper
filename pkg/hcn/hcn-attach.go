@@ -1,10 +1,9 @@
 package hcn
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-
-	"github.com/Microsoft/hcsshim/hcn"
 )
 
 type HcnAttachCommand struct {
@@ -27,13 +26,15 @@ func (h *HcnAttachCommand) Init(args []string) error {
 	return nil
 }
 
-func (h *HcnAttachCommand) Run() error {
+func (h *HcnAttachCommand) Run() (string, error) {
 	fmt.Println("Running hcn attach command ", h.Name())
 	fmt.Printf("Read epid %s, epname %s, sbid %s", h.EndpointId, h.EndpointName, h.SandboxID)
 
-	attachedEpIds, err := hcn.GetNamespaceEndpointIds(sandbox)
+	err := attachEndpoint(h.EndpointId, h.SandboxID)
 	if err != nil {
-		return nil, err
+		fmt.Println("Failed to attach endpoint")
+		return "", err
 	}
-	return nil
+	fmt.Println(json.Marshal(h.EndpointId))
+	return h.EndpointId, nil
 }
