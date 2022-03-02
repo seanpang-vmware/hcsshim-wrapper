@@ -10,7 +10,7 @@ type HcnAttachCommand struct {
 	Fs           *flag.FlagSet
 	EndpointName string
 	EndpointId   string
-	SandboxID    string
+	Sandbox      string
 }
 
 func (h *HcnAttachCommand) Name() string {
@@ -20,15 +20,14 @@ func (h *HcnAttachCommand) Name() string {
 func (h *HcnAttachCommand) Init(args []string) error {
 	h.Fs.StringVar(&h.EndpointId, "epId", "", "HNS endpoint id")
 	h.Fs.StringVar(&h.EndpointName, "epName", "", "HNS endpoint name")
-	h.Fs.StringVar(&h.SandboxID, "sandbox", "", "Sandbox id for endpoint to attach")
+	h.Fs.StringVar(&h.Sandbox, "sandbox", "", "Contianer netns for endpoint to attach")
 	h.Fs.Parse(args)
 	return nil
 }
 
 func (h *HcnAttachCommand) Run() (string, error) {
-	err := attachEndpoint(h.EndpointId, h.SandboxID)
+	err := attachEndpoint(h.EndpointId, h.Sandbox)
 	if err != nil {
-		fmt.Println("Error: Failed to attach endpoint", err)
 		return "", err
 	}
 	fmt.Println(json.Marshal(h.EndpointId))

@@ -22,9 +22,6 @@ func NewHcnAttachCommand(args []string) *HcnAttachCommand {
 	hc := &HcnAttachCommand{
 		Fs: flag.NewFlagSet("HCNAttach", flag.ContinueOnError),
 	}
-
-	hc.Init(args)
-
 	return hc
 }
 
@@ -32,9 +29,13 @@ func NewHcnGetEndpointsBySandboxIdCommand(args []string) *HcnGetEndpointsBySandb
 	hc := &HcnGetEndpointsBySandboxIdCommand{
 		Fs: flag.NewFlagSet("HCNGetNamespaceEndpoints", flag.ContinueOnError),
 	}
+	return hc
+}
 
-	hc.Init(args)
-
+func NewHcnIsAttachedCommand(args []string) *HcnIsAttachedCommand {
+	hc := &HcnIsAttachedCommand{
+		Fs: flag.NewFlagSet("HCNIsAttached", flag.ContinueOnError),
+	}
 	return hc
 }
 
@@ -46,21 +47,25 @@ type Runner interface {
 
 func root(args []string) error {
 	if len(args) < 1 {
-		return errors.New("No subcommand found in command")
+		return errors.New("Error: No subcommand found in command")
 	}
 
 	cmds := []Runner{
+		NewHcnGetEndpointsBySandboxIdCommand(args[1:]),
 		NewHcnAttachCommand(args[1:]),
+		NewHcnIsAttachedCommand(args[1:]),
 	}
 
 	subcommand := os.Args[1]
 
 	for _, cmd := range cmds {
 		if cmd.Name() == subcommand {
+			cmd.Init(args[1:])
 			output, err := cmd.Run()
 			if err != nil {
-				fmt.Println(output)
+				return err
 			}
+			fmt.Println(output)
 			return nil
 		}
 	}
@@ -69,6 +74,7 @@ func root(args []string) error {
 
 func main() {
 	if err := root(os.Args[1:]); err != nil {
+		fmt.Printf("Error: failed to run command %s", err)
 		fmt.Println(err)
 		os.Exit(1)
 	}
